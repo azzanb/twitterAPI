@@ -1,4 +1,8 @@
 .DS_Store
 .sass-cache
+<<<<<<< Updated upstream
 js/config.js
+=======
+config.js
+>>>>>>> Stashed changes
 node_modules

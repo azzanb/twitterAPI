@@ -1,0 +1,23 @@
+{
+  "name": "twitterapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/azzanb/twitterAPI.git"
+  },
+  "author": "Azzan Braxton",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/azzanb/twitterAPI/issues"
+  },
+  "homepage": "https://github.com/azzanb/twitterAPI#readme",
+  "dependencies": {
+    "nodemon": "^1.11.0",
+    "twit": "^2.2.9"
+  }
+}
