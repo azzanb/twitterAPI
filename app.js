@@ -15,7 +15,7 @@ const searchFriends = 'https://api.twitter.com/1.1/friends/list.json?cursor=-1&s
 const searchMessages = 'https://api.twitter.com/1.1/direct_messages.json?count=5';
 
 
-//-----JS PROCESS (You'll see a pattern)-----//
+//-----JS PROCESS (You'll notice a pattern)-----//
 /* 
 
 1)Search tweets, then friends, then messages 
@@ -38,16 +38,16 @@ const searchMessages = 'https://api.twitter.com/1.1/direct_messages.json?count=5
 tweet.get(searchTweets, (err, data, res) => { 
 })
 .then(function(data){ 	const statuses = data.data.statuses,
-		  arrT = [], //these are tweets
+		  arrT = [], 
 		  retweetCount = [], 
 		  likesCount = [],
 		  timeAgo = [];
 
 	for(let i = 0; i < 5; i++){
-		arrT.push(statuses[i].text);	
-		retweetCount.push(statuses[i].retweet_count);
-		likesCount.push(statuses[i].favorite_count);
-		timeAgo.push(ta.ago(data.data.statuses[i].created_at));
+		arrT.push(statuses[i].text); //tweets	
+		retweetCount.push(statuses[i].retweet_count); //how many retweets of the tweet
+		likesCount.push(statuses[i].favorite_count); //how many like the tweet recieved 
+		timeAgo.push(ta.ago(data.data.statuses[i].created_at)); //how much time has passed since the last message
 	}
 
 	return [
@@ -58,7 +58,7 @@ tweet.get(searchTweets, (err, data, res) => {
 		];
 	})
 	.then(function(nextData){	
-		const finalTweets = nextData[0],
+		const finalTweets = nextData[0], 
 			  finalRetweetCount = nextData[1],
 			  finalLikesCount = nextData[2],
 			  timeAgo = nextData[3],
@@ -70,9 +70,9 @@ tweet.get(searchTweets, (err, data, res) => {
 		tweet.get(searchFriends, (err, data, res) => {
 			
 			for(let i = 0; i < 5; i++){
-				finalRealNames.push(data.users[i].name);	
-				finalScreenNames.push(data.users[i].screen_name);	
-				friendsProfileImage.push(data.users[i].profile_image_url);
+				finalRealNames.push(data.users[i].name); //friends' real names	
+				finalScreenNames.push(data.users[i].screen_name); //friends' screen names
+				friendsProfileImage.push(data.users[i].profile_image_url); //friends' profile images
 			}
 			
 			return finalRealNames, 
@@ -89,16 +89,18 @@ tweet.get(searchTweets, (err, data, res) => {
 				  messageProfileImage = [],
 				  myProfileImage = [],
 				  numOfFollowers = [],
-				  messageTime = [];
+				  messageTime = [],
+				  backgroundURL = [];
 
 			tweet.get(searchMessages, (err, data, res) => {
+				backgroundURL.push(data[0].recipient.profile_banner_url);
 				numOfFollowers.push(data[0].recipient.friends_count); //counts the number of people I'm following and pushes into array
 				
 				for(let i = 0; i < 5; i++){
-					finalMessages.push(data[i].text);
-					messageTimes.push(ta.ago(data[i].created_at));
-					messageProfileImage.push(data[i].sender.profile_image_url);
-					myProfileImage.push(data[0].recipient.profile_image_url);
+					finalMessages.push(data[i].text); //messages
+					messageTimes.push(ta.ago(data[i].created_at));//time since the most recent messages
+					messageProfileImage.push(data[i].sender.profile_image_url); //profile images of those who sent messages
+					myProfileImage.push(data[0].recipient.profile_image_url); //my own profile image
 				}
 				
 				//the total list of arrays (containing all necessary twitter information) that will be passed as variables to res.render().
@@ -111,7 +113,8 @@ tweet.get(searchTweets, (err, data, res) => {
 				finalLikesCount, 
 				friendsProfileImage, 
 				messageTimes,  
-				messageProfileImage, 
+				messageProfileImage,
+				backgroundURL, 
 				myProfileImage, 
 				timeAgo;
 			})
@@ -120,6 +123,7 @@ tweet.get(searchTweets, (err, data, res) => {
 					res.render(
 						'sample', 
 						{
+						//below are all the locals that are accessed in sample.pug
 						tweets: finalTweets,
 						friends: finalRealNames,
 						screen: finalScreenNames,
@@ -130,8 +134,10 @@ tweet.get(searchTweets, (err, data, res) => {
 						messageImage: messageProfileImage,
 						friendsImage: friendsProfileImage,
 						myImage: myProfileImage,
+						backgroundImage: backgroundURL,
 						followers: numOfFollowers,
 						tweetTime: timeAgo
+
 						}
 					);
 				});
