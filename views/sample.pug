@@ -8,7 +8,7 @@ block formPic
 
 block following
 	.app--section--heading
-		strong= followers         
+		strong= friends         
 		h2 Following
 
 block tweets
@@ -16,7 +16,7 @@ block tweets
 		li
 			strong.app--tweet--timestamp= tweetTime[i]     
 			a.app--tweet--author
-				.app--avatar(style='background-image: url('+ myImage[i] +')')             
+				.app--avatar(style='background-image: url('+ myImage +')')             
 				h4 Azzan Braxton @Extra_Zany
 			p= tweets[i]    
 			ul.app--tweet--actions.circle--list--inline
@@ -50,7 +50,7 @@ block friends
 					.circle--fluid--cell.circle--fluid--primary
 						a.app--tweet--author
 							.app--avatar(style='background-image: url('+ friendsImage[i] + ')')
-						h4= friends[i] 
+						h4= realNames[i] 
 						p= screen[i]     
 					.circle--fluid--cell.align-bottom
 						button.button-primary Tweet     
