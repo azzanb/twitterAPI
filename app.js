@@ -32,31 +32,31 @@ const searchMessages = 'https://api.twitter.com/1.1/direct_messages.json?count=5
 tweet.get('account/verify_credentials', { skip_status: true }, function(err, data, res){	
 })
 .then(function(result){
-	const name = result.data.screen_name,
+	const myScreenName = result.data.screen_name,
+		  myName = result.data.name,
 		  friends = result.data.friends_count,
-		  myImage = result.data.profile_image_url,
-		  myBackgroundImage = result.data.profile_background_image_url;
+		  myImage = result.data.profile_image_url;
 
 	const statuses = [],
 	      retweetCount = [], 
 	      likesCount = [],
 	      tweetTimeAgo = [];
 
-	tweet.get('search/tweets', {q: name, count: 5}, function(err, data, res){
+	tweet.get('search/tweets', {q: myScreenName, count: 5}, function(err, data, res){
 		for(let i = 0; i < 5; i++){
 			statuses.push(data.statuses[i].text);
 			retweetCount.push(data.statuses[i].retweet_count);
 			likesCount.push(data.statuses[i].favorite_count);
 			tweetTimeAgo.push(ta.ago(data.statuses[i].created_at));
 		}
-		return statuses, friends, myImage, retweetCount, likesCount, tweetTimeAgo;
+		return statuses, friends, myImage, myScreenName, myName, retweetCount, likesCount, tweetTimeAgo;
 	})
 	.then(function(){
 		const realNames = [], //followers' real names
 		  	  screenNames = [], //followers' screen names
 		  	  friendsProfileImage = [];
 
-		tweet.get('friends/list', {screen_name: name}, function(err, data, res){
+		tweet.get('friends/list', {screen_name: myScreenName}, function(err, data, res){
 			for(let i = 0; i < 5; i++){
 				realNames.push(data.users[i].name);
 				screenNames.push(data.users[i].screen_name);
@@ -86,6 +86,8 @@ tweet.get('account/verify_credentials', { skip_status: true }, function(err, dat
 						tweets: statuses,
 						realNames: realNames,
 						screen: screenNames,
+						myScreenName: myScreenName,
+						myName: myName,
 						messages: messages,
 						retweets: retweetCount,
 						likes: likesCount,
@@ -93,7 +95,6 @@ tweet.get('account/verify_credentials', { skip_status: true }, function(err, dat
 						messageImage: messageImage,
 						friendsImage: friendsProfileImage,
 						myImage: myImage,
-						backgroundImage: myBackgroundImage,
 						friends: friends,
 						tweetTime: tweetTimeAgo
 						}

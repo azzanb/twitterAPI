@@ -1,10 +1,10 @@
 extends template
 
-block background
-	header.circle--header(style='background-image: url('+ backgroundImage +')') 
-
 block formPic
 	.app--avatar(style='background-image: url('+ myImage[0] +')')
+
+block screenName
+	h1= myScreenName
 
 block following
 	.app--section--heading
@@ -55,6 +55,8 @@ block friends
 					.circle--fluid--cell.align-bottom
 						button.button-primary Tweet     
 
+block name
+	a= myName
 
 block messaging
 	ul.app--message--conversation
