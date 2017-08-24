@@ -1,10 +1,11 @@
-const tweet = require('./config.js'),
+const Twit = require('twit'),
+	  configKey = require('./config.js'),
+	  tweet = new Twit(configKey),
 	  ta = require('time-ago')(), //this module will format the twitter time for tweets and messages
 	  express = require('express'),
 	  path = require('path'),
 	  app = express();
 
-//set up pug for html/css template viewing 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'pug'); 
 app.use(express.static(path.join(__dirname, "public")));
@@ -15,7 +16,7 @@ const searchFriends = 'https://api.twitter.com/1.1/friends/list.json?cursor=-1&s
 const searchMessages = 'https://api.twitter.com/1.1/direct_messages.json?count=5';
 
 
-//-----JS PROCESS (You'll notice a pattern)-----//
+//-----APP.JS PROCESS (You'll notice a pattern)-----//
 /* 
 
 1)Search tweets, then friends, then messages 
@@ -29,7 +30,7 @@ const searchMessages = 'https://api.twitter.com/1.1/direct_messages.json?count=5
 /* 
 
 1)Convert index.html to pug(template.pug) and extend that into my own sample.pug
-2)Block the information I need and access the local variables passed in res.render() in sample.pug
+2)Block the information I need and access the local variables passed in res.render() to sample.pug
 3)Use loops in sample.pug so that html is processed dynamically
 
 */
@@ -70,9 +71,9 @@ tweet.get(searchTweets, (err, data, res) => {
 		tweet.get(searchFriends, (err, data, res) => {
 			
 			for(let i = 0; i < 5; i++){
-				finalRealNames.push(data.users[i].name); //friends' real names	
-				finalScreenNames.push(data.users[i].screen_name); //friends' screen names
-				friendsProfileImage.push(data.users[i].profile_image_url); //friends' profile images
+				finalRealNames.push(data.users[i].name); 	
+				finalScreenNames.push(data.users[i].screen_name); 
+				friendsProfileImage.push(data.users[i].profile_image_url); 
 			}
 			
 			return finalRealNames, 
@@ -94,16 +95,16 @@ tweet.get(searchTweets, (err, data, res) => {
 
 			tweet.get(searchMessages, (err, data, res) => {
 				backgroundURL.push(data[0].recipient.profile_banner_url);
-				numOfFollowers.push(data[0].recipient.friends_count); //counts the number of people I'm following and pushes into array
+				numOfFollowers.push(data[0].recipient.friends_count); 
 				
 				for(let i = 0; i < 5; i++){
 					finalMessages.push(data[i].text); //messages
-					messageTimes.push(ta.ago(data[i].created_at));//time since the most recent messages
+					messageTimes.push(ta.ago(data[i].created_at));
 					messageProfileImage.push(data[i].sender.profile_image_url); //profile images of those who sent messages
-					myProfileImage.push(data[0].recipient.profile_image_url); //my own profile image
+					myProfileImage.push(data[0].recipient.profile_image_url); 
 				}
 				
-				//the total list of arrays (containing all necessary twitter information) that will be passed as variables to res.render().
+				
 				return numOfFollowers, 
 				finalMessages, 
 				finalRealNames, 
